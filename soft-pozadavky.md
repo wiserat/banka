@@ -100,10 +100,9 @@
 * **Uživatelské rozhraní:**  
   - Aplikace bude poskytovat rozhraní pro:
     - **CLI (příkazový řádek)**
-    - Případně **desktopové aplikace** (WinForms, WPF) – dle implementační volby.
 
 * **Databáze:**  
-  - Databázové úložiště bude využívat **SQL databázi** (např. SQLite, MSSQL nebo PostgreSQL).
+  - Databázové úložiště bude využívat **SQLite databázi**.
 
 * **Bezpečnost:**  
   - Citlivá data (např. hesla) budou ukládána bezpečně pomocí **hashovacích algoritmů** (např. BCrypt).
@@ -113,9 +112,6 @@
 
 * **Logování:**  
   - Logování operací bude konfigurovatelné, s možností volby mezi ukládáním do souboru nebo databáze.
-
-* **Priorita:**  
-  - Vysoká pro bezpečnost a modulární architekturu; střední pro volbu uživatelského rozhraní.
 
 ---
 
@@ -147,5 +143,3 @@
 * **Úvěrový účet:**  
   - Úroky se připisují k dluhu na konci měsíce, pokud dluh není v bezúročném období.
   - Výpočet probíhá obdobně jako u spořicího účtu, ale s negativním znaménkem.
-
-* **Priorita:** Vysoká
