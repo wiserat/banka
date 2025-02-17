@@ -95,7 +95,7 @@
 
 * **Vývojové prostředí:**  
   - Aplikace bude vyvíjena v jazyce **C#** s využitím .NET Frameworku.  
-  - Preferovaná vývojová prostředí: Visual Studio nebo JetBrains Rider.
+  - Preferovaná vývojová prostředí: Visual Studio Code.
 
 * **Uživatelské rozhraní:**  
   - Aplikace bude poskytovat rozhraní pro:
