@@ -1,7 +1,7 @@
 # Bankovní systém v C#: Softwarové požadavky
 * **SSPŠ**
 * **Verze 1**
-* **Jan Novák**
+* **Jonáš Tenora**
 * **17.2.2025**
 
 ## Obsah
