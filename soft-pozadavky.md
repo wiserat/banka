@@ -61,7 +61,7 @@
 
 3. **Přihlašovací a registrační mechanismus**  
    - Přihlášení bude probíhat pomocí rodného čísla (unikátní identifikátor) a hesla.
-   - Pokud uživatel není nalezen v databázi, bude vyzván k registraci, při které se automaticky vytvoří počáteční účet s přednastaveným zůstatkem.
+   - Pokud uživatel není nalezen v databázi, bude vyzván k registraci, při které se automaticky vytvoří počáteční debitní účet.
    - **Priorita:** Vysoká
 
 4. **Správa rolí a oprávnění**  
