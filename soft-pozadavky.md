@@ -69,7 +69,7 @@
      - **Klienti:** Přístup pouze ke svým účtům a transakcím.
      - **Bankéři:** Přístup ke všem účtům a celkový přehled o vkladech a úrocích.
      - **Administrátoři:** Správa uživatelských účtů a jejich oprávnění.
-   - **Priorita:** Vysoká
+   - **Priorita:** Střední
 
 5. **Práce s časem**  
    - Některé funkce systému (např. připisování úroků, úvěrové splátky) jsou závislé na čase.
@@ -87,7 +87,7 @@
    - **Úvěrový účet:**  
      - Úroky se připisují k dluhu na konci měsíce, pokud není dluh v bezúročném období.
      - Výpočet probíhá obdobně jako u spořicího účtu, avšak s negativním znaménkem.
-   - **Priorita:** Vysoká
+   - **Priorita:** Střední
 
 ---
 
