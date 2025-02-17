@@ -15,7 +15,7 @@
 
 ## Historie Dokumentu
 ### Verze 1
-* **Autor:** Jan Novák  
+* **Autor:** Jonáš Tenora
 * **Komentář:** První verze dokumentu
 
 ---
@@ -28,7 +28,7 @@
   Klienti, bankéři a administrátoři banky
   
 * **Kontakt:**  
-  jan.novak@skola.cz
+  tenora.jo.2022@skola.ssps.cz
   
 * **Odkazy na další dokumenty:**  
   Technická specifikace, implementační dokumentace
