@@ -1,0 +1,158 @@
+# Bankovní Simulace – Funkční specifikace
+
+## Historie Dokumentu
+
+**Verze:** 1  
+**Datum:** 04.03.2025  
+**Autor:** Jonáš Tenora  
+**Kontakt:** tenora.jo.2022@skola.ssps.cz
+
+---
+
+## Úvod
+
+Tento dokument specifikuje funkce a technickou realizaci bankovní aplikace v jazyce C#/.NET. Účelem aplikace je umožnit správu různých typů bankovních účtů, provádění transakcí, výpočet úroků a správu uživatelských oprávnění. Dokument popisuje hlavní architekturu systému, návrh uživatelského rozhraní, bezpečnostní opatření, zpracování transakcí a časově závislé operace.
+
+---
+
+## Celková hrubá architektura
+
+Simulace bankovního systému je navržena jako konzolová aplikace, která komunikuje s uživatelem prostřednictvím textových výzev. Aplikace využívá SQL databázi (např. SQLite) pro uchovávání informací o uživatelích, účtech a transakcích. Hlavní funkce systému zahrnují:
+
+- **Správu uživatelů:** Registrace, přihlášení a role (klient, bankéř, administrátor).
+- **Správu účtů:** Vytváření, mazání a údržbu různých typů účtů (běžný, spořicí, studentský spořicí, úvěrový).
+- **Transakce:** Vkládání, výběry, převody a logování všech operací.
+- **Úročení:** Periodické přičítání úroků u spořicích a úvěrových účtů dle váženého průměrného zůstatku.
+- **Práci s časem:** Simulace průchodu času pomocí časovačů pro automatický výpočet úroků.
+
+---
+
+## Hlavní obsah aplikace
+
+### 1. Správa uživatelů
+- **Registrace a přihlášení:**  
+  - Uživatel zadá rodné číslo (sloužící jako unikátní identifikátor) a heslo.  
+  - Heslo je bezpečně uloženo pomocí hashovací knihovny (např. BCrypt).  
+  - Při přihlášení se ověřuje existence uživatele a správnost hesla.
+
+- **Role a oprávnění:**  
+  - Uživatelé mohou mít různé role (klient, bankéř, administrátor).  
+  - Role určují přístup k jednotlivým funkcím systému, např. klient má přístup pouze ke svým účtům, zatímco bankéři a administrátoři mají rozšířený přehled.
+
+### 2. Správa účtů
+- **Typy účtů:**  
+  - **Běžný účet:** Umožňuje provádět standardní transakce (vklady, výběry, převody) a není úročen.  
+  - **Spořicí účet:** Ukládání prostředků s roční úrokovou sazbou; úročení probíhá na základě váženého průměrného zůstatku.  
+  - **Studentský spořicí účet:** Variant spořicího účtu s omezeními jednorázového a denního výběru.  
+  - **Úvěrový účet:** Umožňuje čerpat prostředky do stanoveného rámce; úroky se počítají z dluhu (se započtením bezúročného období).
+
+- **Vytváření a mazání účtů:**  
+  - Uživatel si může založit nový účet.  
+  - Smazání účtu je možné pouze pokud je zůstatek nulový.  
+  - Implementace využívá metody pro CRUD operace nad tabulkou `Accounts`.
+
+### 3. Transakce a logování
+- **Provádění transakcí:**  
+  - Uživatelé mohou převádět peníze mezi účty.  
+  - Při převodech je ověřována dostupnost prostředků, případně dodržení limitů u úvěrových účtů.
+  
+- **Logování operací:**  
+  - Každá transakce (vklad, výběr, převod, úročení) je zaznamenána do tabulky `Transactions` s příslušnými časovými údaji.  
+  - Logy mohou být uloženy buď přímo v databázi, nebo volitelně do externího souboru.
+
+### 4. Práce s časem a výpočet úroků
+- **Časově závislé operace:**  
+  - Pro automatické přičítání úroků a správu splátek jsou využity časovače (např. `System.Timers.Timer`).  
+  - Časové intervaly umožňují simulovat přechod do budoucnosti.
+  
+- **Výpočet úroků:**  
+  - **Spořicí účet:**  
+    - Úrok se počítá dle vzorce:  
+      
+      ```
+      Úrok = (vážený průměrný zůstatek * roční úroková sazba) / 12
+      ```
+      
+    - Vážený průměrný zůstatek se vypočítává na základě historie zůstatků a jejich doby platnosti během měsíce.
+  
+  - **Úvěrový účet:**  
+    - Úrok se přičítá k dluhu na konci měsíce, pokud dluh přesáhne stanovenou mez nebo není v bezúročném období.
+  
+- **Zaokrouhlení:**  
+  - Úroková částka je zaokrouhlena dle pravidel stanovených bankou.
+
+### 5. Uživatelské rozhraní
+- **Konzolová aplikace:**  
+  - Interakce probíhá prostřednictvím příkazového řádku s textovými výzvami a zadáváním údajů přes `Console.ReadLine()`.
+  
+- **Rozhraní pro různé role:**  
+  - **Klienti:** Mají přístup pouze ke svým účtům a transakční historii.  
+  - **Bankéři:** Mohou spravovat a přehledně zobrazovat informace o všech účtech.  
+  - **Administrátoři:** Zajišťují správu uživatelských účtů, oprávnění a konfiguraci systému.
+
+### 6. Databáze a bezpečnost
+- **Databázová struktura:**  
+  - Používá se SQL databáze (SQLite) s tabulkami `Users`, `Accounts` a `Transactions`.  
+  - Vztahy mezi tabulkami jsou definovány pomocí cizích klíčů a jsou implementovány operace CASCADE pro správu integrity dat.
+  
+- **Bezpečnostní opatření:**  
+  - Hesla jsou bezpečně ukládána pomocí hashovacích algoritmů (BCrypt).  
+  - Citlivá data jsou validována a chráněna před neoprávněným přístupem.
+
+---
+
+## Technická realizace
+
+### Struktura tříd a dědičnost
+- **Hlavní třídy:**  
+  - `User` – reprezentuje uživatele systému.  
+  - `Account` – abstraktní třída reprezentující obecný bankovní účet, ze které dědí konkrétní typy účtů (`DebitAccount`, `SavingAccount`, `ChildrenSavingAccount`, `CreditAccount`).
+  
+- **Dědičnost:**  
+  - Konkrétní účty dědí základní funkce jako převody peněz (`SendMoney`) a získávání transakční historie, přičemž každá implementace rozšiřuje chování o specifické operace (např. výpočet úroků).
+
+### Práce s databází
+- **Inicializace databáze:**  
+  - Při spuštění aplikace se ověřuje existence databáze a případně se vytvoří potřebné tabulky.
+  
+- **CRUD operace:**  
+  - Implementovány jsou operace pro vytváření, čtení, aktualizaci a mazání uživatelů, účtů i transakcí.
+  
+- **Integrita dat:**  
+  - Vztahy mezi tabulkami jsou řízeny pomocí cizích klíčů, což zaručuje konzistenci a integritu dat.
+
+### Asynchronní operace a časovače
+- **Časovače:**  
+  - Pro účely pravidelného výpočtu úroků jsou využity třídy z `System.Timers`, které periodicky spouštějí metody pro přičítání úroků.
+  
+- **Výpočet váženého průměru:**  
+  - Sledování historie zůstatků a jejich váhového započítání umožňuje přesný výpočet úrokové sazby dle aktuálních podmínek.
+
+### Logování a chybové stavy
+- **Logování:**  
+  - Každá transakce, vklad, výběr nebo úročení je logováno do databáze a/nebo souboru, což umožňuje sledovat historii operací.
+  
+- **Zachytávání chyb:**  
+  - Uživatel je v případě neplatného vstupu či nedostatečného zůstatku informován pomocí chybových zpráv, které jsou zřetelně vypsány do konzole.
+
+---
+
+## Etapy projektu a hodnotící kritéria
+
+### Fáze 1: Softwarové požadavky
+- **Cíl:** Sběr a dokumentace všech požadavků na systém.
+- **Hodnocení:** Kompletnost, srozumitelnost, bezespornost, konkrétnost, forma a včasnost.
+
+### Fáze 2: Funkční specifikace
+- **Cíl:** Detailní popis technické realizace požadavků, návrh uživatelského rozhraní, definice chybových stavů a logování.
+- **Hodnocení:** Názornost, úplnost, bezespornost, použitelnost návrhu, forma a včasnost.
+
+### Fáze 3: Implementace
+- **Cíl:** Vývoj a testování aplikace podle definované specifikace.
+- **Hodnocení:** Použitelnost (všechny operace musí být realizovatelné), kvalita kódu (čitelnost, dodržení OOP principů, správné datové typy), spolehlivost a bezpečnost (hashování hesel, validace vstupů).
+
+---
+
+## Závěr
+
+Tento dokument shrnuje klíčové funkce a technické požadavky bankovní simulace, zahrnující správu uživatelů a účtů, provádění transakcí, automatický výpočet úroků a implementaci bezpečnostních opatření. Navržená architektura systému v C#/.NET umožňuje snadnou rozšiřitelnost a údržbu, a zároveň zajišťuje vysokou míru integrity a bezpečnosti dat.
